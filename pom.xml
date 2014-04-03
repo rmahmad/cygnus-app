@@ -22,8 +22,8 @@
       <systemPath>${project.basedir}/lib/jssc.jar</systemPath>
     </dependency>
     <dependency>
-      <groupId>phidget</groupId>
-      <artifactId>phidget</artifactId>
+      <groupId>phidget21</groupId>
+      <artifactId>phidget21</artifactId>
       <version>1.0</version>
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/phidget21.jar</systemPath>

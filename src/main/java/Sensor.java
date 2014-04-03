@@ -23,7 +23,8 @@ public class Sensor implements Runnable {
 		this.port = port;
 		this.phidget = new InterfaceKitPhidget();
 		this.phidget.open(serial);
-		phidget.waitForAttachment();
+		this.phidget.waitForAttachment();
+		System.out.println("Hello");
 	}
 	
 	/*****************************************************
@@ -37,6 +38,7 @@ public class Sensor implements Runnable {
 		if(this.type == sensorType.sonar) // sonar sensor
 		{
 			double distance = phidget.getSensorValue(port)*sonar2cm;
+			System.out.println(distance);
 			if(distance < threshold) {
 				return -1;
 			}

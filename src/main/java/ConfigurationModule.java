@@ -69,7 +69,7 @@ public class ConfigurationModule implements RobotListener {
 	ConfigurationModule() throws InterruptedException, SerialPortException, PhidgetException {
 		initConfig();
 	}	
-	
+
 	public static void test() throws InterruptedException, SerialPortException, PhidgetException {
 		ConfigurationModule config = new ConfigurationModule();
 	}
@@ -189,7 +189,7 @@ public class ConfigurationModule implements RobotListener {
 		motors.add(new Motor(true, true, orientation.clockwise, "\b"));
 		motors.add(new Motor(true, true, orientation.counterclockwise, "\r"));
 
-		sensors.add(new Sensor(sensorType.sonar, 0, 327977, 18, 2));
+		sensors.add(new Sensor(sensorType.sonar, 0, 325751, 18, 2));
 		new Sensors(sensors, motors, comms);
 		
 	}
