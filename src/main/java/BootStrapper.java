@@ -16,7 +16,7 @@ public class BootStrapper {
 		RobotInterpreter r = new RobotInterpreter();
 		
 		r.addRobotListener(config);
-		String code = readFile("/home/mayngo/workspace/Cygnus/Java/Config Module/src/configmodule/testing.txt");
+		String code = readFile("testing.txt");
 		System.out.println(code);
 		r.load(code);
 		r.execute();
