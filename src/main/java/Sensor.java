@@ -4,7 +4,7 @@ import com.phidgets.*;
 // TODO depending on the commonalities between the sensors, we can either make a polymorphic structure of sensors, make all separate classes for each
 // 		type and ignore a parent class, or include them all in this class.  I don't care, but I dont know enough at this time to choose for us
 
-public class Sensor {
+public class Sensor implements Runnable {
 	
 	private int orientationDegree; // where is the sensor facing? 0 = right, 90 = front...
 	private sensorType type;
@@ -19,6 +19,7 @@ public class Sensor {
 	{
 		this.type = type;
 		this.orientationDegree = orientationDegree;
+		this.threshold = threshold;
 		this.port = port;
 		this.phidget = new InterfaceKitPhidget();
 		this.phidget.open(serial);
@@ -36,11 +37,11 @@ public class Sensor {
 		if(this.type == sensorType.sonar) // sonar sensor
 		{
 			double distance = phidget.getSensorValue(port)*sonar2cm;
-			if(distance < threshold)
+			if(distance < threshold) {
 				return -1;
+			}
 			
 			return distance;
-			
 		}
 		else if(this.type == sensorType.reflective) // reflective sensor
 		{
@@ -53,5 +54,16 @@ public class Sensor {
 		
 		return 0;
 	}
-	
+
+	@Override
+	public void run() {
+		while(true) {
+			try {
+				pollSensor();
+			} catch (PhidgetException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
 }
