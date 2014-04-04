@@ -10,8 +10,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Scanner;
 import java.util.ArrayList;
-
-import com.phidgets.PhidgetException;
+import com.phidgets.*;
 
 import jssc.SerialPortException;
 import robotinterpreter.RobotListener;
@@ -22,11 +21,15 @@ class Sensors implements Runnable {
 	private ArrayList<Motor> motors;
 	private ArrayList<Sensor> sensors;
 	private UART comms;
+	private InterfaceKitPhidget phidget;
 	
-	public Sensors(ArrayList<Sensor> sensors, ArrayList<Motor> motors, UART comms) {
+	public Sensors(ArrayList<Sensor> sensors, ArrayList<Motor> motors, UART comms) throws PhidgetException {
 		this.sensors = sensors;
 		this.motors = motors;
 		this.comms = comms;
+		this.phidget = new InterfaceKitPhidget();
+		this.phidget.open(325751);
+		this.phidget.waitForAttachment();
 		t = new Thread(this, "Sensor Thread");
 		t.start();
 	}
@@ -36,7 +39,7 @@ class Sensors implements Runnable {
 		while (true) {
 			for(int i = 0; i < this.sensors.size(); i++) {
 				try {
-					if(sensors.get(i).pollSensor() == -1) {
+					if(sensors.get(i).pollSensor(phidget) == -1) {
 						for (int j = 0; j < motors.size(); j++) {
 							try {
 								comms.sendString(motors.get(j).Stop());
@@ -189,9 +192,12 @@ public class ConfigurationModule implements RobotListener {
 		motors.add(new Motor(true, true, orientation.clockwise, "\b"));
 		motors.add(new Motor(true, true, orientation.counterclockwise, "\r"));
 
-		sensors.add(new Sensor(sensorType.sonar, 0, 325751, 18, 2));
+		sensors.add(new Sensor(sensorType.sonar, 0, 18, 2));
+		sensors.add(new Sensor(sensorType.sonar, 0, 18, 6));
+		sensors.add(new Sensor(sensorType.sonar, 0, 18, 7));
+		//Sensor.initPhidget(325751);
+
 		new Sensors(sensors, motors, comms);
-		
 	}
 
 	// ********************* ROBOT LISTENER REQUIRED METHODS FROM IMPLEMENTING
