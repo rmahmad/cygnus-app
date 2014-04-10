@@ -4,10 +4,10 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
+/*import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.StandardOpenOption;*/
 import java.util.Scanner;
 import java.util.ArrayList;
 import com.phidgets.*;
@@ -15,61 +15,15 @@ import com.phidgets.*;
 import jssc.SerialPortException;
 import robotinterpreter.RobotListener;
 
-class Sensors implements Runnable {
-
-	Thread t;
-	private ArrayList<Motor> motors;
-	private ArrayList<Sensor> sensors;
-	private UART comms;
-	private InterfaceKitPhidget phidget;
-	
-	public Sensors(ArrayList<Sensor> sensors, ArrayList<Motor> motors, UART comms) throws PhidgetException {
-		this.sensors = sensors;
-		this.motors = motors;
-		this.comms = comms;
-		this.phidget = new InterfaceKitPhidget();
-		this.phidget.open(325751);
-		this.phidget.waitForAttachment();
-		t = new Thread(this, "Sensor Thread");
-		t.start();
-	}
-	
-	@Override
-	public void run() {
-		while (true) {
-			for(int i = 0; i < this.sensors.size(); i++) {
-				try {
-					if(sensors.get(i).pollSensor(phidget) == -1) {
-						for (int j = 0; j < motors.size(); j++) {
-							try {
-								comms.sendString(motors.get(j).Stop());
-							} catch (InterruptedException e) {
-								e.printStackTrace();
-							} catch (SerialPortException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				} catch (PhidgetException e) {
-					e.printStackTrace();
-				}
-			}
-			try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
-	}
-}
-
 public class ConfigurationModule implements RobotListener {
 
 	private static ArrayList<Motor> motors = new ArrayList<Motor>();
 	private static ArrayList<Sensor> sensors = new ArrayList<Sensor>();
 	private static UART comms = new UART();
+	private static InterfaceKitPhidget phidget;
 
 	ConfigurationModule() throws InterruptedException, SerialPortException, PhidgetException {
+
 		initConfig();
 	}	
 
@@ -154,7 +108,7 @@ public class ConfigurationModule implements RobotListener {
 	 * 
 	 * @throws IOException
 	 *********************************************************************************/
-	public void SaveConfiguration(String filepath) throws IOException {
+/*	public void SaveConfiguration(String filepath) throws IOException {
 		// get output stream writer
 		Path file = Paths.get(filepath);
 		OutputStream out = new BufferedOutputStream(Files.newOutputStream(file,
@@ -173,7 +127,7 @@ public class ConfigurationModule implements RobotListener {
 			// pin number
 		}
 
-	}
+	}*/
 
 	// ************************************************************ FILE I/O END
 	// ***********************************************
@@ -188,6 +142,9 @@ public class ConfigurationModule implements RobotListener {
 	public static void initConfig() throws InterruptedException,
 			SerialPortException, PhidgetException {
 		comms.initUart();
+		phidget = new InterfaceKitPhidget();
+		phidget.open(325751);
+		phidget.waitForAttachment();
 
 		motors.add(new Motor(true, true, orientation.clockwise, "\b"));
 		motors.add(new Motor(true, true, orientation.counterclockwise, "\r"));
@@ -197,7 +154,7 @@ public class ConfigurationModule implements RobotListener {
 		sensors.add(new Sensor(sensorType.sonar, 0, 18, 7));
 		//Sensor.initPhidget(325751);
 
-		new Sensors(sensors, motors, comms);
+		new Phidget(sensors, motors, comms, phidget);
 	}
 
 	// ********************* ROBOT LISTENER REQUIRED METHODS FROM IMPLEMENTING
@@ -361,8 +318,13 @@ public class ConfigurationModule implements RobotListener {
 	}
 
 	public int getSonarData(int num) {
-		// TODO
-		return (0); // DEBUG temp placeholder
+		int distance = 0;
+		try {
+			distance = (int)sensors.get(num).pollSensor(phidget);
+		} catch (PhidgetException e) {
+			e.printStackTrace();
+		}
+		return distance;
 	}
 
 	public int getBearing() {
@@ -381,7 +343,7 @@ public class ConfigurationModule implements RobotListener {
 		{
 			// get position before moving forward
 			int placeHolder = 0; // DEBUG replace with correct sensor int value
-			int start = getSonarData(placeHolder);
+			int start = getSonarData(2);
 
 			// begin moving forward
 			for (int i = 0; i < motors.size(); i++) {
@@ -397,7 +359,7 @@ public class ConfigurationModule implements RobotListener {
 			// wait until robot has moved 'dist' forward
 			int travelled = 0;
 			while (travelled < dist) {
-				travelled = start - getSonarData(placeHolder);
+				travelled = start - getSonarData(2);
 			}
 
 			// stop moving forward
@@ -413,7 +375,7 @@ public class ConfigurationModule implements RobotListener {
 		} else if (dist < 0) {
 			// get position before moving backward
 			int placeHolder = 0; // DEBUG replace with correct sensor int value
-			int start = getSonarData(placeHolder);
+			int start = getSonarData(2);
 
 			// begin moving backward
 			for (int i = 0; i < motors.size(); i++) {
@@ -429,7 +391,7 @@ public class ConfigurationModule implements RobotListener {
 			// wait until robot has moved 'dist' backward
 			int travelled = 0;
 			while (travelled > dist) {
-				travelled = start - getSonarData(placeHolder);
+				travelled = start - getSonarData(2);
 			}
 
 			// stop moving backward
