@@ -149,9 +149,10 @@ public class ConfigurationModule implements RobotListener {
 		motors.add(new Motor(true, true, orientation.clockwise, "\b"));
 		motors.add(new Motor(true, true, orientation.counterclockwise, "\r"));
 
-		sensors.add(new Sensor(sensorType.sonar, 0, 18, 2));
-		sensors.add(new Sensor(sensorType.sonar, 0, 18, 6));
-		sensors.add(new Sensor(sensorType.sonar, 0, 18, 7));
+		sensors.add(new Sensor(sensorType.sonar, 0, 17
+			, 2));
+		sensors.add(new Sensor(sensorType.sonar, 0, 17, 6));
+		sensors.add(new Sensor(sensorType.sonar, 0, 17, 7));
 		//Sensor.initPhidget(325751);
 
 		new Phidget(sensors, motors, comms, phidget);
@@ -343,7 +344,7 @@ public class ConfigurationModule implements RobotListener {
 		{
 			// get position before moving forward
 			int placeHolder = 0; // DEBUG replace with correct sensor int value
-			int start = getSonarData(2);
+			int start = getSonarData(0);
 
 			// begin moving forward
 			for (int i = 0; i < motors.size(); i++) {
@@ -359,7 +360,7 @@ public class ConfigurationModule implements RobotListener {
 			// wait until robot has moved 'dist' forward
 			int travelled = 0;
 			while (travelled < dist) {
-				travelled = start - getSonarData(2);
+				travelled = start - getSonarData(0);
 			}
 
 			// stop moving forward
@@ -375,7 +376,7 @@ public class ConfigurationModule implements RobotListener {
 		} else if (dist < 0) {
 			// get position before moving backward
 			int placeHolder = 0; // DEBUG replace with correct sensor int value
-			int start = getSonarData(2);
+			int start = getSonarData(0);
 
 			// begin moving backward
 			for (int i = 0; i < motors.size(); i++) {
@@ -391,7 +392,7 @@ public class ConfigurationModule implements RobotListener {
 			// wait until robot has moved 'dist' backward
 			int travelled = 0;
 			while (travelled > dist) {
-				travelled = start - getSonarData(2);
+				travelled = start - getSonarData(0);
 			}
 
 			// stop moving backward

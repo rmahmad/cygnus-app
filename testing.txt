@@ -1,11 +1,4 @@
 {
-	method drive  ( string "f" );
-	waituntil ( [ method getSonars  ( int 2 ) < int 20 ] );
-	method stop ();
-	method turn  ( string "r" );
-	waituntil ( [ method getSonars  ( int 6 ) < int 20 ] );
-	method stop ();
-	method turn  ( string "l" );
-	waituntil ( [ method getSonars  ( int 7 ) < int 20 ] );
-	method stop ();
+	method driveDistance ( int  10 );
+	method stop();
 }
