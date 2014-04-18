@@ -23,7 +23,6 @@ public class ConfigurationModule implements RobotListener {
 	private static InterfaceKitPhidget phidget;
 
 	ConfigurationModule() throws InterruptedException, SerialPortException, PhidgetException {
-
 		initConfig();
 	}	
 

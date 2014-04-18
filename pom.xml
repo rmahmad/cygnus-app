@@ -35,6 +35,13 @@
       <scope>system</scope>
       <systemPath>${project.basedir}/lib/robotinterpreter_1.2.jar</systemPath>
     </dependency>
+    <dependency>
+      <groupId>robotservices</groupId>
+      <artifactId>robotservices</artifactId>
+      <version>1.0</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/robotservices.jar</systemPath>
+    </dependency>
   </dependencies>
   <build>
     <pluginManagement>

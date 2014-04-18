@@ -1,0 +1,4 @@
+{
+	method driveDistance ( int  20 );
+	method stop();
+}
